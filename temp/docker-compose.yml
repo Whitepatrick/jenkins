@@ -1,0 +1,39 @@
+# Jenkins Master
+20e-jenkins:
+  image: 20e-jenkins
+  container_name: 20e-jenkins
+  ports:
+   - "8080:8080"
+   - "50000"
+  volumes_from:
+    - volumes
+  env_file:
+    - jenkins-master.env
+  labels:
+    com.blacklabelops.description: "Jenkins Continuous Integration System"
+    com.blacklabelops.service: "jenkins-master"
+# Global volume container
+volumes:
+  image: blacklabelops/centos
+  container_name: jenkins_data
+  volumes:
+    # Logging volumes
+    - /var/log
+    # Jenkins volume
+    - /jenkins
+  command: chown -R 1000:1000 /var/log /jenkins
+  labels:
+    com.blacklabelops.description: "Jenkins Docker Data Container"
+    com.blacklabelops.service: "volumes"
+    com.blacklabelops.applications: "centos jenkins-user"
+# Jenkins Slave
+slave:
+  image: cd w
+  links:
+    - 20e-jenkins:jenkins
+  env_file:
+    - jenkins-slave.env
+  labels:
+    com.blacklabelops.description: "Jenkins Swarm JDK-8 Slave"
+    com.blacklabelops.service: "slave"
+    com.blacklabelops.applications: "java maven gradle"
