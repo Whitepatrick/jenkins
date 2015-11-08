@@ -25,3 +25,4 @@ workflow-step-api
 jquery
 git-client
 scm-api
+dockerhub
