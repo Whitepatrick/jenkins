@@ -4,8 +4,6 @@ RUN apt-get update && apt-get install -y wget git curl zip && rm -rf /var/lib/ap
 
 ENV JENKINS_HOME /var/jenkins_home
 ENV JENKINS_SLAVE_AGENT_PORT 50000
-ENV JENKINS_ADMIN_USER patrick
-ENV JENKINS_ADMIN_PASSWORD roll4Cr!t
 ENV JENKINS_MASTER_EXECUTORS 3
 # Parameters for setting up HTTP.
 # Example:
