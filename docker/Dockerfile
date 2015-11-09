@@ -9,7 +9,7 @@ ENV JENKINS_MASTER_EXECUTORS 3
 # Jenkins is run with user `jenkins`, uid = 1000
 # If you bind mount a volume from the host or a data container,
 # ensure you use the same uid
-RUN useradd -d "$JENKINS_HOME" -u 502 -m -s /bin/bash jenkins
+RUN useradd -d "$JENKINS_HOME" -u 1000 -m -s /bin/bash jenkins
 RUN usermod -G shadow jenkins
 
 # Jenkins home directory is a volume, so configuration and build history
