@@ -26,3 +26,8 @@ jquery
 git-client
 scm-api
 dockerhub
+matrix-auth
+reverse-proxy-auth-plugin
+google-login
+authorize-project
+cas-plugin
