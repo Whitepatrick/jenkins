@@ -5,23 +5,11 @@ RUN apt-get update && apt-get install -y wget git curl zip && rm -rf /var/lib/ap
 ENV JENKINS_HOME /var/jenkins_home
 ENV JENKINS_SLAVE_AGENT_PORT 50000
 ENV JENKINS_MASTER_EXECUTORS 3
-# Parameters for setting up HTTP.
-# Example:
-# JENKINS_KEYSTORE_PASSWORD=swordfish
-ENV JENKINS_SLAVEPORT=50000
-#SMTP_USER_NAME=
-#SMTP_USER_PASS=
-#SMTP_HOST=
-#SMTP_PORT=
-#SMTP_REPLYTO_ADDRESS=
-#SMTP_USE_SSL=
-#SMTP_CHARSET=
-
 
 # Jenkins is run with user `jenkins`, uid = 1000
 # If you bind mount a volume from the host or a data container,
 # ensure you use the same uid
-RUN useradd -d "$JENKINS_HOME" -u 1000 -m -s /bin/bash jenkins
+RUN useradd -d "$JENKINS_HOME" -u 502 -m -s /bin/bash jenkins
 RUN usermod -G shadow jenkins
 
 # Jenkins home directory is a volume, so configuration and build history
