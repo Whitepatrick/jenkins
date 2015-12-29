@@ -1,3 +1,3 @@
-data/
 data/*
-.secrets
+jenkins-master-security.env
+jenkins-slave-security.env

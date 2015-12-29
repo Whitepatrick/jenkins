@@ -1,9 +1,10 @@
+# Example with RSnapshot Container for continuous backups
 # Jenkins Master
-20e-jenkins:
-  image: 20e-jenkins
-  container_name: 20e-jenkins
+jenkins:
+  image: blacklabelops/jenkins
+  container_name: jenkins
   ports:
-   - "8080:8080"
+   - "8090:8080"
    - "50000"
   volumes_from:
     - volumes
@@ -21,19 +22,36 @@ volumes:
     - /var/log
     # Jenkins volume
     - /jenkins
-  command: chown -R 1000:1000 /var/log /jenkins
+    # Rsnapshot volume
+    - /snapshots
+  command: chown -R 1000:1000 /var/log /jenkins /snapshots
   labels:
     com.blacklabelops.description: "Jenkins Docker Data Container"
     com.blacklabelops.service: "volumes"
     com.blacklabelops.applications: "centos jenkins-user"
 # Jenkins Slave
 slave:
-  image: cd w
+  image: blacklabelops/swarm-jdk8
   links:
-    - 20e-jenkins:jenkins
+    - jenkins:jenkins
   env_file:
     - jenkins-slave.env
   labels:
     com.blacklabelops.description: "Jenkins Swarm JDK-8 Slave"
     com.blacklabelops.service: "slave"
     com.blacklabelops.applications: "java maven gradle"
+# Backup container
+rsnapshot:
+  image: blacklabelops/rsnapshotd
+  volumes_from:
+    - jenkins_data
+  environment:
+    - 'BACKUP_DIRECTORIES=/jenkins/ jenkins/'
+    - 'DELAYED_START=20'
+    - 'SYSLOGGER=true'
+    - 'SYSLOGGER_TAG=rsnapshot'
+# Syslog container for cron logs
+rsyslog:
+  image: blacklabelops/rsyslogd
+  volumes_from:
+    - jenkins_data
