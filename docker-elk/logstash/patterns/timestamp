@@ -1,0 +1,5 @@
+BRACKETS \[(.*?)\]
+PARENTHS \(([^)]+)\)
+SB_TIMESTAMP %{MONTHDAY}%{SPACE}%{MONTH:month}%{SPACE}%{YEAR:year}%{SPACE}%{TIME:time}
+REWRITE_TIME %{MONTHDAY}/%{MONTH}/%{YEAR}:%{TIME}%{SPACE}%{NOTSPACE}%{NOTSPACE}%{INT:timezone}
+REWRITE_APACHELOG %{IPORHOST:clientip} %{HTTPDUSER:ident} %{USER:auth}%{SPACE}%{DATA}%{REWRITE_TIME:timestamp}%{NOTSPACE}%{SPACE}%{BRACKETS:baseurl}%{BRACKETS:requestid}%{SPACE}%{PARENTHS:log_level}%{SPACE}%{GREEDYDATA:log_message}

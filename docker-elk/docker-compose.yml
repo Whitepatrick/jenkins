@@ -1,38 +1,36 @@
-elasticsearch:
-  image: elasticsearch:latest
-  container_name: elasticsearch
-  command: elasticsearch -Des.network.host=_non_loopback_ -Des.cluster.name=elk1 -Des.node.master=true
+es01:
+  image: elasticsearch:2.3
   ports:
     - "9200:9200"
     - "9300:9300"
-
-slave:
-  image: elasticsearch:latest
-  name: "slave"
-  command: elasticsearch -Des.network.host=_non_loopback_ -Des.cluster.name=elk1 -Des.node.master=false
-  ports:
-    - 9201
-    - 9301
+es02:
+  image: elasticsearch:2.3
   links:
-    - elasticsearch:elasticsearch
+   - es01:elasticsearch
+
+es03:
+  image: elasticsearch:2.3
+  links:
+   - es01:elasticsearch
+   - es02:es02
 
 logstash:
   image: logstash:latest
-  command: bash -c "plugin install logstash-input-beats && logstash -f /etc/logstash/conf.d/logstash.conf"
+  command: logstash -f /etc/logstash/conf.d/*.conf
   volumes:
     - ./logstash/config:/etc/logstash/conf.d
+    - ./logstash/patterns:/etc/logstash/patterns
   ports:
     - "5400:5400"
   links:
-    - elasticsearch:elasticsearch
-    - slave
+    - es01:elasticsearch
 
 kibana:
-  build: kibana/
+  build: ./kibana
   volumes:
-    - ./kibana/config/kibana.yml:/opt/kibana/config/kibana.yml
+    - ./kibana/config:/opt/kibana/config
   ports:
     - "5601:5601"
   links:
-    - elasticsearch:elasticsearch
+    - es01:elasticsearch
 #curl -XPUT "http://0.0.0.0:9200/.kibana/_settings" -d '{ "index" : { "max_result_window" : 2147483647 } }'
